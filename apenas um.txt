@@ -1,0 +1,58 @@
+from collections import deque
+
+def BFS(G, v):
+    n = len(G)  # número de vértices
+    marca = ['branco'] * n
+    d = [float('inf')] * n
+
+    marca[v] = 'cinza'
+    d[v] = 0
+
+    F = deque()
+    F.append(v)
+
+    while F:
+        w = F.popleft()
+        u = G[w]  # lista de vizinhos de w
+
+        for vizinho in u:
+            if marca[vizinho] == 'branco':
+                marca[vizinho] = 'cinza'
+                d[vizinho] = d[w] + 1
+                F.append(vizinho)
+        marca[w] = 'preto'
+
+    return d
+
+
+import heapq
+
+def dijkstra_trajeto(grafo, origem):
+    n = len(grafo)
+    dist = [float('inf')] * n
+    pai = [None] * n
+    dist[origem] = 0
+
+    heap = [(0, origem)]  # (distância, vértice)
+
+    while heap:
+        atual_dist, u = heapq.heappop(heap)
+
+        if atual_dist > dist[u]:
+            continue
+
+        for v, peso in grafo[u]:
+            if dist[u] + peso < dist[v]:
+                dist[v] = dist[u] + peso
+                pai[v] = u
+                heapq.heappush(heap, (dist[v], v))
+
+return dist, pai
+
+def reconstruir_caminho(pai, destino):
+caminho = []
+atual = destino
+while atual is not None:
+    caminho.append(atual)
+    atual = pai[atual]
+return caminho[::-1]  # inverte o caminho
